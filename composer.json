@@ -1,0 +1,26 @@
+{
+    "name": "yemenpoint/filament-custom-fields",
+    "description": "Filament Custom Fields",
+    "type": "library",
+    "require": {
+        "filament/filament": "2.*"
+    },
+    "autoload": {
+        "psr-4": {
+            "Yemenpoint\\FilamentCustomFields\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "yemenpoint",
+            "email": "ebrahim29001@gmail.com"
+        }
+    ],
+    "extra": {
+    "laravel": {
+        "providers": [
+            "Yemenpoint\\FilamentCustomFields\\FilamentCustomFieldsServiceProvider"
+        ]
+    }
+}
+}
