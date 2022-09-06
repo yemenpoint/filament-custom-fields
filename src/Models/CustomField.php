@@ -2,17 +2,12 @@
 
 namespace Yemenpoint\FilamentCustomFields\Models;
 
-use Carbon\Carbon;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Validation\Rule;
 
 class CustomField extends Model
 {
-    use SoftDeletes, HasFactory;
-
-    protected $appends = ["options"];
+    use SoftDeletes;
 
     protected $fillable = [
         'model_type',
@@ -28,16 +23,14 @@ class CustomField extends Model
         'column_span',
     ];
 
-    public function getOptionsAttribute()
+    public function setAnswersAttribute($value)
     {
-        $options = [];
-        $value = $this->answers;
+        $this->attributes['answers'] = json_encode($value, JSON_UNESCAPED_UNICODE);
+    }
 
-        if ($value) {
-            $options = explode("|", $value);
-        }
-
-        return array_combine($options, $options);
+    public function getAnswersAttribute($value)
+    {
+        return json_decode($value) ?: [];
     }
 
     public function model()
