@@ -36,27 +36,27 @@ class CustomFieldResource extends Resource
     }
 
 
-    protected static ?Closure $canAccess = null;
-
-    protected static function canAccessPage(): bool
-    {
-        return static::$canAccess && (static::$canAccess)(auth()->user());
-    }
-
-    public function mount()
-    {
-        abort_unless(static::canAccessPage(), 403);
-    }
-
-    public static function canAccess(Closure $callback): void
-    {
-        static::$canAccess = $callback;
-    }
-
-    protected static function shouldRegisterNavigation(): bool
-    {
-        return static::canAccessPage();
-    }
+//    protected static ?Closure $canAccess = null;
+//
+//    protected static function canAccessPage(): bool
+//    {
+//        return static::$canAccess && (static::$canAccess)(auth()->user());
+//    }
+//
+//    public function mount()
+//    {
+//        abort_unless(static::canAccessPage(), 403);
+//    }
+//
+//    public static function canAccess(Closure $callback): void
+//    {
+//        static::$canAccess = $callback;
+//    }
+//
+//    protected static function shouldRegisterNavigation(): bool
+//    {
+//        return static::canAccessPage();
+//    }
 
     public static function form(Form $form): Form
     {
