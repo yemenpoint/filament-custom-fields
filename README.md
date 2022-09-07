@@ -110,8 +110,8 @@ use Yemenpoint\FilamentCustomFields\CustomFields\FilamentCustomFieldsHelper;
 ```php
     use Yemenpoint\FilamentCustomFields\CustomFields\FilamentCustomFieldsHelper;
 
-    show CustomFieldResponses in Resource column
-    
+
+   // show CustomFieldResponses in Resource column
     public static function table(Table $table): Table
     {
         return $table
@@ -120,6 +120,7 @@ use Yemenpoint\FilamentCustomFields\CustomFields\FilamentCustomFieldsHelper;
             ]);
     }
 ```
+## Images
 
 <div align="center">
     <img src="https://github.com/yemenpoint/filament-custom-fields/blob/main/images/1.png" >
