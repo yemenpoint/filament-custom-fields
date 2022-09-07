@@ -49,7 +49,7 @@ class CustomFieldResource extends Resource
                         Forms\Components\TextInput::make('column_span')->numeric()->maxValue(12)->minValue(1)->default(1),
                         Forms\Components\TextInput::make('order')->numeric()->default(1),
                         Forms\Components\TextInput::make('rules'),
-                        Forms\Components\KeyValue::make('answers')->columnSpan(2),
+                        Forms\Components\KeyValue::make('options')->columnSpan(2),
                         Forms\Components\Toggle::make('required')->default(true),
                         Forms\Components\Toggle::make('show_in_columns')->default(true),
                     ])
