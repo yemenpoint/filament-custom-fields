@@ -13,4 +13,5 @@ return [
     ],
     "navigation_group" => "Custom Fields",
     "custom_fields_label" => "Custom Fields",
+    "custom_field_responses_label" => "Custom Fields Responses",
 ];
