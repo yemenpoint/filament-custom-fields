@@ -42,14 +42,16 @@ class CustomFieldResource extends Resource
                 Forms\Components\Card::make()->schema([
                     Forms\Components\Grid::make()->schema([
                         Forms\Components\Select::make('model_type')->options(config("filament-custom-fields.models"))->required(),
-                        Forms\Components\Select::make('type')->options(FilamentCustomFieldsHelper::getTypes())->default("text")->required(),
+                        Forms\Components\Select::make('type')->reactive()->options(FilamentCustomFieldsHelper::getTypes())->default("text")->required(),
+                        Forms\Components\KeyValue::make('options')->columnSpan("full")->hidden(function (callable $get) {
+                            return $get("type") != "select";
+                        }),
                         Forms\Components\TextInput::make('title')->required(),
                         Forms\Components\TextInput::make('hint'),
                         Forms\Components\TextInput::make('default_value'),
                         Forms\Components\TextInput::make('column_span')->numeric()->maxValue(12)->minValue(1)->default(1),
                         Forms\Components\TextInput::make('order')->numeric()->default(1),
                         Forms\Components\TextInput::make('rules'),
-                        Forms\Components\KeyValue::make('options')->columnSpan(2),
                         Forms\Components\Toggle::make('required')->default(true),
                         Forms\Components\Toggle::make('show_in_columns')->default(true),
                     ])

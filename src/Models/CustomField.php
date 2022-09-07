@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class CustomField extends Model
 {
     use SoftDeletes;
+    protected $table = "filament_custom_fields";
 
     protected $fillable = [
         'model_type',

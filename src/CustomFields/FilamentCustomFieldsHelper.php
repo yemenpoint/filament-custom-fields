@@ -62,9 +62,10 @@ class FilamentCustomFieldsHelper
 
     public static function custom_fields_column()
     {
-        return TextColumn::make('customFieldResponses')->formatStateUsing(function ($record) {
+        return TextColumn::make('responses')->formatStateUsing(function ($record) {
+            $customFieldResponses = CustomFieldResponse::with("field")->where("model_type", get_class($record))->where("model_id", $record->id)->get();
             $dat = "";
-            foreach ($record->customFieldResponses as $respons) {
+            foreach ($customFieldResponses as $respons) {
                 if ($respons->field->show_in_columns) {
                     $dat = $dat . $respons->field->title . "<br>" . $respons->value . "<br>";
                 }

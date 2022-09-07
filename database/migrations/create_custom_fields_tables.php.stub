@@ -13,7 +13,7 @@ return new class extends Migration {
      */
     public function up()
     {
-        Schema::create("custom_fields", function (Blueprint $table) {
+        Schema::create("filament_custom_fields", function (Blueprint $table) {
             $table->increments('id');
             $table->string('model_type');
             $table->string('type')->default("text");
@@ -30,10 +30,10 @@ return new class extends Migration {
             $table->softDeletes();
         });
 
-        Schema::create("custom_field_responses", function (Blueprint $table) {
+        Schema::create("filament_custom_field_responses", function (Blueprint $table) {
             $table->increments('id');
             $table->unsignedInteger('field_id');
-            $table->foreign('field_id')->references('id')->on("custom_fields");
+            $table->foreign('field_id')->references('id')->on("filament_custom_fields");
             $table->unsignedInteger('model_id');
             $table->string('model_type');
             $table->longText('value')->nullable();
@@ -50,7 +50,7 @@ return new class extends Migration {
     {
         DB::statement('SET FOREIGN_KEY_CHECKS=0');
 
-        Schema::dropIfExists("custom_fields");
-        Schema::dropIfExists("custom_field_responses");
+        Schema::dropIfExists("filament_custom_fields");
+        Schema::dropIfExists("filament_custom_field_responses");
     }
 };

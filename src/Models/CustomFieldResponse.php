@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class CustomFieldResponse extends Model
 {
+    protected $table = "filament_custom_field_responses";
+
     protected $fillable = [
         'value',
         'model_id',
