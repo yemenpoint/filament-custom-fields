@@ -3,15 +3,17 @@
 namespace Yemenpoint\FilamentCustomFields;
 
 use Spatie\LaravelPackageTools\Package;
-use Spatie\LaravelPackageTools\PackageServiceProvider;
 use Yemenpoint\FilamentCustomFields\Resources\CustomFieldResource;
+use Filament\PluginServiceProvider;
 
-class FilamentCustomFieldsServiceProvider extends PackageServiceProvider
+class FilamentCustomFieldsServiceProvider extends PluginServiceProvider
 {
 
-    protected array $resources = [
-        CustomFieldResource::class
-    ];
+    protected function getResources(): array
+    {
+        return config("filament-custom-fields.resources", []);
+    }
+
 
     public function configurePackage(Package $package): void
     {

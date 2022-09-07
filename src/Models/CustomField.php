@@ -9,6 +9,16 @@ class CustomField extends Model
 {
     use SoftDeletes;
 
+    protected $appends = ["options"];
+
+    public function getOptionsAttribute()
+    {
+        if ($this->answers && count($this->answers)) {
+            return $this->answers;
+        }
+        return [];
+    }
+
     protected $fillable = [
         'model_type',
         'type',
@@ -30,7 +40,7 @@ class CustomField extends Model
 
     public function getAnswersAttribute($value)
     {
-        return json_decode($value) ?: [];
+        return json_decode($value, true) ?: [];
     }
 
     public function model()

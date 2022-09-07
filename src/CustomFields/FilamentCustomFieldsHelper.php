@@ -11,6 +11,7 @@ use Filament\Tables\Columns\TextColumn;
 use Illuminate\Support\Str;
 use Yemenpoint\FilamentCustomFields\Models\CustomField;
 use Yemenpoint\FilamentCustomFields\Models\CustomFieldResponse;
+use Filament\Forms;
 
 class FilamentCustomFieldsHelper
 {
@@ -72,7 +73,7 @@ class FilamentCustomFieldsHelper
         });
     }
 
-    public static function custom_fields_form($model, $id = null)
+    public static function custom_fields_form($model, $id = null): array
     {
         if ($id) {
             $fields = CustomField::with(["responses" => function ($q) use ($id) {
@@ -97,13 +98,15 @@ class FilamentCustomFieldsHelper
                     }
                 }
             }
-
+            $columnSpan = $field->column_span;
 
             if ($field->type == "select") {
 
                 $input = Select::make("customField_" . $field->id)
                     ->label($field->title)
+                    ->hint($field->hint)
                     ->options($field->options)
+                    ->columnSpan($columnSpan)
                     ->required($field->required == 1)
                     ->afterStateHydrated(fn($component) => $component->state($default))
                     ->default($default);
@@ -116,6 +119,8 @@ class FilamentCustomFieldsHelper
 
                 $input = Textarea::make("customField_" . $field->id)
                     ->label($field->title)
+                    ->hint($field->hint)
+                    ->columnSpan($columnSpan)
                     ->required($field->required == 1)
                     ->afterStateHydrated(fn($component) => $component->state($default))
                     ->default($default);
@@ -128,6 +133,8 @@ class FilamentCustomFieldsHelper
 
                 $input = Toggle::make("customField_" . $field->id)
                     ->label($field->title)
+                    ->hint($field->hint)
+                    ->columnSpan($columnSpan)
                     ->required($field->required == 1)
                     ->afterStateHydrated(fn($component) => $component->state($default))
                     ->default($default);
@@ -136,6 +143,8 @@ class FilamentCustomFieldsHelper
 
                 $input = RichEditor::make("customField_" . $field->id)
                     ->label($field->title)
+                    ->hint($field->hint)
+                    ->columnSpan($columnSpan)
                     ->required($field->required == 1)
                     ->afterStateHydrated(fn($component) => $component->state($default))
                     ->default($default);
@@ -148,6 +157,8 @@ class FilamentCustomFieldsHelper
 
                 $input = TextInput::make("customField_" . $field->id)
                     ->label($field->title)
+                    ->hint($field->hint)
+                    ->columnSpan($columnSpan)
                     ->required($field->required == 1)
                     ->afterStateHydrated(fn($component) => $component->state($default))
                     ->default($default);
@@ -162,7 +173,14 @@ class FilamentCustomFieldsHelper
 
             $form[] = $input;
         }
-        return $form;
+        if (count($form)) {
+            return [
+                Forms\Components\Card::make()->schema([
+                    Forms\Components\Grid::make()->schema($form)
+                ])
+            ];
+        }
+        return [];
     }
 
 }

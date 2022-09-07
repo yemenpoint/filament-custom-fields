@@ -24,7 +24,7 @@ return new class extends Migration {
             $table->string('default_value')->nullable();
             $table->text('rules')->nullable();
             $table->boolean('show_in_columns')->default(false);
-            $table->string('column_span')->nullable();
+            $table->integer('column_span')->default(1);
             $table->string('order')->default(1);
             $table->timestamps();
             $table->softDeletes();
