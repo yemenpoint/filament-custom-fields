@@ -1,4 +1,4 @@
-# Filament Custom Fields 
+# Filament Custom Fields
 
 ## Installation
 
@@ -8,15 +8,17 @@ You can install the package via composer:
 composer require yemenpoint/filament-custom-fields
 ```
 
-Optionally, you can publish config and migration using
+Optionally, you can publish config, migration and translations using
 
-```php
+```sh
 php artisan vendor:publish --tag="filament-custom-fields-migrations"
 php artisan vendor:publish --tag="filament-custom-fields-config"
+php artisan vendor:publish --tag="filament-custom-fields-translations"
+```
 
-//then migrate
+### Then migrate
+```sh
 php artisan migrate
-
 ```
 ### Config
 #### filament-custom-fields.php
@@ -31,11 +33,11 @@ return [
         CustomFieldResource::class,
         CustomFieldResponseResource::class,
     ],
-    //model options will appear in CustomFieldResource 
+    //model options will appear in CustomFieldResource
     'models' => [
 //        \App\Models\Trying::class => "trying",
     ],
-    
+
     "navigation_group" => "Custom Fields",
     "custom_fields_label" => "Custom Fields",
     "custom_field_responses_label" => "Custom Fields Responses",
@@ -143,7 +145,7 @@ use Yemenpoint\FilamentCustomFields\CustomFields\FilamentCustomFieldsHelper;
 </div>
 <br/>
 
-####  
+####
 
 ## Credits
 

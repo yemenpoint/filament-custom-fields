@@ -20,6 +20,7 @@ class FilamentCustomFieldsServiceProvider extends PluginServiceProvider
         $package
             ->name('filament-custom-fields')
             ->hasConfigFile()
+            ->hasTranslations()
             ->hasMigration("create_custom_fields_tables");
     }
 }
