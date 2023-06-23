@@ -24,15 +24,19 @@ class CustomField extends Model
         'column_span',
     ];
 
-    public function setOptionsAttribute($value)
-    {
-        $this->attributes['options'] = json_encode($value, JSON_UNESCAPED_UNICODE);
-    }
+    protected $casts = [
+        'options' => 'array',
+    ];
 
-    public function getOptionsAttribute($value)
-    {
-        return json_decode($value, true) ?: [];
-    }
+    // public function setOptionsAttribute($value)
+    // {
+    //     $this->attributes['options'] = json_encode($value, JSON_UNESCAPED_UNICODE);
+    // }
+
+    // public function getOptionsAttribute($value)
+    // {
+    //     return json_decode($value, true) ?: [];
+    // }
 
     public function model()
     {

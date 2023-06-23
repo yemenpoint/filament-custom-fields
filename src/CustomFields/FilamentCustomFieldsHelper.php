@@ -102,14 +102,18 @@ class FilamentCustomFieldsHelper
             $columnSpan = $field->column_span;
 
             if ($field->type == "select") {
+                $options = collect($field->options)
+                    ->filter(fn($item) => collect($item)->has(['value', 'label']))
+                    ->flatMap(fn($item) => [$item['value'] => $item['label']]);
 
                 $input = Select::make("customField_" . $field->id)
                     ->label($field->title)
                     ->hint($field->hint)
-                    ->options($field->options)
+                    ->options($options->toArray())
                     ->columnSpan($columnSpan)
                     ->required($field->required == 1)
                     ->afterStateHydrated(fn($component) => $component->state($default))
+                    ->searchable((bool) config('filament-custom-fields.type_variations.select.searchable'))
                     ->default($default);
 
                 if ($field->rules) {

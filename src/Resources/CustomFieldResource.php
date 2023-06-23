@@ -3,19 +3,26 @@
 namespace Yemenpoint\FilamentCustomFields\Resources;
 
 use Closure;
-use Yemenpoint\FilamentCustomFields\CustomFields\FilamentCustomFieldsHelper;
-use Yemenpoint\FilamentCustomFields\Models\CustomField;
-use Yemenpoint\FilamentCustomFields\Resources\CustomFieldResource\Pages;
 use Filament\Forms;
-use Filament\Resources\Form;
-use Filament\Resources\Resource;
-use Filament\Resources\Table;
 use Filament\Tables;
+use Illuminate\Support\Str;
+use Filament\Resources\Form;
+use Filament\Resources\Table;
+use Filament\Resources\Resource;
+use Filament\Forms\Components\Card;
+use Filament\Forms\Components\Grid;
+use Illuminate\Database\Eloquent\Model;
+use Filament\Notifications\Notification;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Yemenpoint\FilamentCustomFields\Models\CustomField;
+use Yemenpoint\FilamentCustomFields\Resources\CustomFieldResource\Pages;
+use Yemenpoint\FilamentCustomFields\CustomFields\FilamentCustomFieldsHelper;
 
 class CustomFieldResource extends Resource
 {
+    protected static array $options = [];
+
     protected static ?string $model = CustomField::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-collection';
@@ -41,19 +48,117 @@ class CustomFieldResource extends Resource
             ->schema([
                 Forms\Components\Card::make()->schema([
                     Forms\Components\Grid::make()->schema([
-                        Forms\Components\Select::make('model_type')->options(config("filament-custom-fields.models"))->required(),
-                        Forms\Components\Select::make('type')->reactive()->options(FilamentCustomFieldsHelper::getTypes())->default("text")->required(),
-                        Forms\Components\KeyValue::make('options')->columnSpan("full")->hidden(function (callable $get) {
-                            return $get("type") != "select";
-                        }),
+                        Forms\Components\Select::make('model_type')->options(config("filament-custom-fields.models"))
+                            ->required(),
+
+                        Forms\Components\Select::make('type')
+                            ->reactive()
+                            ->options(FilamentCustomFieldsHelper::getTypes())->default("text")
+                            ->required(),
+
                         Forms\Components\TextInput::make('title')->required(),
                         Forms\Components\TextInput::make('hint'),
-                        Forms\Components\TextInput::make('default_value'),
-                        Forms\Components\TextInput::make('column_span')->numeric()->maxValue(12)->minValue(1)->default(1),
-                        Forms\Components\TextInput::make('order')->numeric()->default(1),
-                        Forms\Components\TextInput::make('rules'),
-                        Forms\Components\Toggle::make('required')->default(true),
-                        Forms\Components\Toggle::make('show_in_columns')->default(true),
+
+                        \Filament\Forms\Components\Fieldset::make('options_fieldset')
+                        ->label(__('filament-custom-fields::resource.form.select.options_fieldset.label'))
+                        ->schema([
+                            Forms\Components\Repeater::make('options')
+                                ->disableLabel()
+                                ->before(function (?Model $record) {
+                                    static::$options = (array) ($record?->options ?? []);
+                                })
+                                ->columnSpan("full")
+                                ->hidden(fn (callable $get) => $get("type") != "select")
+                                ->schema([
+                                    Grid::make(2)
+                                    ->schema([
+                                        Forms\Components\Hidden::make('updatedAt')
+                                            ->disabled()
+                                            ->dehydrateStateUsing(fn () => now()->format('c')),
+
+                                        Forms\Components\TextInput::make('label')
+                                            ->label(__('filament-custom-fields::resource.form.select.label.label'))
+                                            ->required()
+                                            ->reactive()
+                                            ->afterStateUpdated(
+                                                function (
+                                                    ?string $state,
+                                                    callable $set,
+                                                    callable $get,
+                                                    string $context,
+                                                    ?Model $record,
+                                                ) {
+                                                    if (($context != 'create') && $get('updatedAt')) {
+                                                        return;
+                                                    }
+
+                                                    $count = collect($record?->options)
+                                                        ->where('value', $state)->count();
+
+                                                    $set('value', str($state)->slug()->append(
+                                                        $count ? '_' . ($count + 1) : ''
+                                                    ));
+                                                }
+                                            )
+                                            ->columnSpan(1),
+
+                                        Forms\Components\TextInput::make('value')
+                                            ->label(__('filament-custom-fields::resource.form.select.value.label'))
+                                            ->string()
+                                            ->required()
+                                            ->reactive()
+                                            ->afterStateUpdated(
+                                                function (
+                                                    ?string $state,
+                                                    ?string $old,
+                                                    callable $get,
+                                                    callable $set,
+                                                    ?Model $record,
+                                                ) {
+                                                    $state = trim((string) $state);
+
+                                                    if ($get('updatedAt') || !($state && collect($record?->options)
+                                                        ->where('value', $state)->count())) {
+                                                        return;
+                                                    }
+
+                                                    Notification::make()
+                                                    ->danger()
+                                                    ->title(
+                                                        __('filament-custom-fields::resource.form.select.value.validation.duplicated.title')
+                                                    )
+                                                    ->body(
+                                                        __('filament-custom-fields::resource.form.select.value.validation.duplicated.body')
+                                                    )
+                                                    ->seconds(3)
+                                                    ->id('select.value.validation.duplicated') // prevent duplication
+                                                    ->send();
+
+                                                    $set('value', $old ?: '');
+                                            })
+                                            ->disabled(function (?string $state, callable $get, ?Model $record) {
+                                                return $state && collect($record?->options)
+                                                    ->where('value', $state)->count() && $get('updatedAt');
+                                            })
+                                            ->columnSpan(1),
+                                    ]),
+                                ])
+                                ->grid(1),
+                        ])
+                        ->hidden(fn (callable $get) => $get("type") != "select"),
+
+                        Grid::make(4)
+                            ->schema([
+                                Grid::make(4)
+                                    ->schema([
+                                        Forms\Components\Toggle::make('required')->columnSpan(1)->default(true),
+                                        Forms\Components\Toggle::make('show_in_columns')->columnSpan(1)->default(true),
+                                    ]),
+                                Forms\Components\TextInput::make('default_value'),
+                                Forms\Components\TextInput::make('column_span')->numeric()->maxValue(12)->minValue(1)->default(1),
+                                Forms\Components\TextInput::make('order')->numeric()->default(1),
+                                Forms\Components\TextInput::make('rules'),
+                            ]),
                     ])
                 ]),
             ]);
@@ -78,8 +183,10 @@ class CustomFieldResource extends Resource
                     return $display;
                 }),
                 Tables\Columns\TextColumn::make("rules"),
-                Tables\Columns\BooleanColumn::make("required"),
-                Tables\Columns\BooleanColumn::make("show_in_columns"),
+                Tables\Columns\IconColumn::make("required")
+                    ->boolean(),
+                Tables\Columns\IconColumn::make("show_in_columns")
+                    ->boolean(),
             ])
             ->filters([
                 //
