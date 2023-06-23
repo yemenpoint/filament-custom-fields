@@ -33,9 +33,9 @@ return [
         CustomFieldResource::class,
         CustomFieldResponseResource::class,
     ],
-    //model options will appear in CustomFieldResource
+    // model options will appear in CustomFieldResource
     'models' => [
-//        \App\Models\Trying::class => "trying",
+        // \App\Models\Trying::class => "trying",
     ],
 
     "navigation_group" => "Custom Fields",
@@ -64,14 +64,14 @@ use Yemenpoint\FilamentCustomFields\CustomFields\FilamentCustomFieldsHelper;
 
     protected function afterCreate()
     {
-        FilamentCustomFieldsHelper::handle_custom_fields_request($this->data, $this->getModel(), $this->record->id);
+        FilamentCustomFieldsHelper::handleCustomFieldsRequest($this->data, $this->getModel(), $this->record->id);
     }
 
     protected function getFormSchema(): array
     {
         return [
             ...parent::getFormSchema(),
-            ...FilamentCustomFieldsHelper::custom_fields_form($this->getModel(), data_get($this->record,"id"))
+            ...FilamentCustomFieldsHelper::customFieldsForm($this->getModel(), data_get($this->record,"id"))
         ];
     }
 
@@ -89,15 +89,15 @@ use Yemenpoint\FilamentCustomFields\CustomFields\FilamentCustomFieldsHelper;
 
     public function afterSave()
     {
-    //this will handle_custom_fields_request
-        FilamentCustomFieldsHelper::handle_custom_fields_request($this->data, $this->getModel(), $this->record->id);
+        // this will handleCustomFieldsRequest
+        FilamentCustomFieldsHelper::handleCustomFieldsRequest($this->data, $this->getModel(), $this->record->id);
     }
 
     protected function getFormSchema(): array
     {
         return [
             ...parent::getFormSchema(),
-            ...FilamentCustomFieldsHelper::custom_fields_form($this->getModel(), data_get($this->record,"id"))
+            ...FilamentCustomFieldsHelper::customFieldsForm($this->getModel(), data_get($this->record,"id"))
         ];
     }
 ```
@@ -118,7 +118,7 @@ use Yemenpoint\FilamentCustomFields\CustomFields\FilamentCustomFieldsHelper;
     {
         return $table
             ->columns([
-                FilamentCustomFieldsHelper::custom_fields_column()
+                FilamentCustomFieldsHelper::customFieldsColumn()
             ]);
     }
 ```
