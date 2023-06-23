@@ -1,4 +1,4 @@
-# Filament Custom Fields 
+# Filament Custom Fields
 
 ## Installation
 
@@ -8,15 +8,17 @@ You can install the package via composer:
 composer require yemenpoint/filament-custom-fields
 ```
 
-Optionally, you can publish config and migration using
+Optionally, you can publish config, migration and translations using
 
-```php
+```sh
 php artisan vendor:publish --tag="filament-custom-fields-migrations"
 php artisan vendor:publish --tag="filament-custom-fields-config"
+php artisan vendor:publish --tag="filament-custom-fields-translations"
+```
 
-//then migrate
+### Then migrate
+```sh
 php artisan migrate
-
 ```
 ### Config
 #### filament-custom-fields.php
@@ -31,11 +33,11 @@ return [
         CustomFieldResource::class,
         CustomFieldResponseResource::class,
     ],
-    //model options will appear in CustomFieldResource 
+    // model options will appear in CustomFieldResource
     'models' => [
-//        \App\Models\Trying::class => "trying",
+        // \App\Models\Trying::class => "trying",
     ],
-    
+
     "navigation_group" => "Custom Fields",
     "custom_fields_label" => "Custom Fields",
     "custom_field_responses_label" => "Custom Fields Responses",
@@ -62,14 +64,14 @@ use Yemenpoint\FilamentCustomFields\CustomFields\FilamentCustomFieldsHelper;
 
     protected function afterCreate()
     {
-        FilamentCustomFieldsHelper::handle_custom_fields_request($this->data, $this->getModel(), $this->record->id);
+        FilamentCustomFieldsHelper::handleCustomFieldsRequest($this->data, $this->getModel(), $this->record->id);
     }
 
     protected function getFormSchema(): array
     {
         return [
             ...parent::getFormSchema(),
-            ...FilamentCustomFieldsHelper::custom_fields_form($this->getModel(), data_get($this->record,"id"))
+            ...FilamentCustomFieldsHelper::customFieldsForm($this->getModel(), data_get($this->record,"id"))
         ];
     }
 
@@ -87,15 +89,15 @@ use Yemenpoint\FilamentCustomFields\CustomFields\FilamentCustomFieldsHelper;
 
     public function afterSave()
     {
-    //this will handle_custom_fields_request
-        FilamentCustomFieldsHelper::handle_custom_fields_request($this->data, $this->getModel(), $this->record->id);
+        // this will handleCustomFieldsRequest
+        FilamentCustomFieldsHelper::handleCustomFieldsRequest($this->data, $this->getModel(), $this->record->id);
     }
 
     protected function getFormSchema(): array
     {
         return [
             ...parent::getFormSchema(),
-            ...FilamentCustomFieldsHelper::custom_fields_form($this->getModel(), data_get($this->record,"id"))
+            ...FilamentCustomFieldsHelper::customFieldsForm($this->getModel(), data_get($this->record,"id"))
         ];
     }
 ```
@@ -116,7 +118,7 @@ use Yemenpoint\FilamentCustomFields\CustomFields\FilamentCustomFieldsHelper;
     {
         return $table
             ->columns([
-                FilamentCustomFieldsHelper::custom_fields_column()
+                FilamentCustomFieldsHelper::customFieldsColumn()
             ]);
     }
 ```
@@ -143,7 +145,7 @@ use Yemenpoint\FilamentCustomFields\CustomFields\FilamentCustomFieldsHelper;
 </div>
 <br/>
 
-####  
+####
 
 ## Credits
 
