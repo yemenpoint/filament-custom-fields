@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class CustomField extends Model
 {
     use SoftDeletes;
+
     protected $table = "filament_custom_fields";
 
     protected $fillable = [
@@ -28,16 +29,6 @@ class CustomField extends Model
         'options' => 'array',
     ];
 
-    // public function setOptionsAttribute($value)
-    // {
-    //     $this->attributes['options'] = json_encode($value, JSON_UNESCAPED_UNICODE);
-    // }
-
-    // public function getOptionsAttribute($value)
-    // {
-    //     return json_decode($value, true) ?: [];
-    // }
-
     public function model()
     {
         return $this->morphTo();
@@ -47,5 +38,4 @@ class CustomField extends Model
     {
         return $this->hasMany(CustomFieldResponse::class, 'field_id');
     }
-
 }
